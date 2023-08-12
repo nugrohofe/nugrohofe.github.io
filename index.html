@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webhook Chat Bot</title>
+    <title>Chat Box</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,8 +12,8 @@
             background-color: #f4f4f4;
         }
 
-        #container {
-            max-width: 600px;
+        #chat-container {
+            max-width: 400px;
             margin: auto;
             padding: 20px;
             background-color: #fff;
@@ -21,13 +21,12 @@
             border-radius: 5px;
         }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        p {
-            margin-bottom: 20px;
+        #messages {
+            height: 300px;
+            overflow: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
         }
 
         input[type="text"] {
@@ -53,22 +52,32 @@
     </style>
 </head>
 <body>
-    <div id="container">
-        <h1>Webhook Chat Bot Example</h1>
-        <p>This is a simple example of integrating a chat bot webhook.</p>
-
+    <div id="chat-container">
+        <h1>Chat Box</h1>
+        <div id="messages"></div>
         <input type="text" id="messageInput" placeholder="Type your message...">
         <button onclick="sendMessage()">Send</button>
     </div>
 
     <script>
         const webhookURL = "https://open.feishu.cn/open-apis/bot/v2/hook/b13061e9-757d-4e4b-845b-3f08ce8c36a4";
+        const messagesDiv = document.getElementById("messages");
+
+        function addMessage(message, isUser) {
+            const messageDiv = document.createElement("div");
+            messageDiv.className = isUser ? "user-message" : "bot-message";
+            messageDiv.textContent = message;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
 
         function sendMessage() {
             const messageInput = document.getElementById("messageInput");
             const message = messageInput.value.trim();
 
             if (message !== "") {
+                addMessage("You: " + message, true);
+
                 fetch(webhookURL, {
                     method: 'POST',
                     headers: {
